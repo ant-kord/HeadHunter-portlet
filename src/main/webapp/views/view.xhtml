@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<f:view
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:cs="http://java.sun.com/jsf/composite/compositeIf"
+>
+	<h:head>
+		<link type="text/css" rel="stylesheet" href="#{request.contextPath}/primefaces/primefaces.css"/>
+	</h:head>
+	<h:body>
+		<div class="ui-grid ui-grid-responsive">
+			<h:form>
+			<p:dataScroller id="list" value="#{managedJob.listJobs}" var="job" chunkSize="10">
+					<f:facet name="header">
+					Вакансии HeadHunter
+					<p:inputText id="text" value="#{managedJob.text}" style="margin-right:10px" placeholder="Поиск"/>
+                	<p:commandButton style="margin-right:10px" ajax="false" process="text" value="Найти" action="#{managedJob.search}" update="@this"/>
+                	Сортировать:
+                	<p:commandLink style="margin-right:10px" ajax="false" value="По имени" action="#{managedJob.sortedByName}" update="@this"/>
+                	<p:commandLink style="margin-right:10px" ajax="false" value="По дате" action="#{managedJob.sortedByDate}" update="@this"/>
+					</f:facet>
+					
+					<f:facet name="loader">
+            			<p:commandButton type="button" value="Ещё" icon="ui-icon-circle-triangle-s"/>
+        			</f:facet>
+					<h:panelGrid columns="2" style="width:100%">
+		            <p:outputPanel>
+		                <h:panelGrid columns="1" cellpadding="2">
+		                    <h:outputText value="#{job.name}" style="font-weight: bold"/>
+		                    <cs:if condition="#{job.salary.from !=null and job.salary.to != null}">
+		                    	<f:facet name="then">
+		                    		<h:outputText value="#{job.salary.from} - #{job.salary.to}"/>
+		                    	</f:facet>
+		                    </cs:if>
+		                    <cs:if condition="#{job.salary.from != null and job.salary.to == null}">
+		                    	<f:facet name="then">
+		                    		<h:outputText value="От #{job.salary.from}"/>
+		                    	</f:facet>
+		                    </cs:if>
+		                    <h:outputText value="#{job.employer.name}"/>
+		                    <h:outputText value="#{job.created_at}">
+		                    	<f:convertDateTime pattern="MM/dd/yyyy" />
+		                    </h:outputText>
+		                </h:panelGrid>
+		            </p:outputPanel>
+		        </h:panelGrid>
+				</p:dataScroller>
+			</h:form>
+		</div>
+	</h:body>
+</f:view>
